@@ -1,6 +1,6 @@
-import hashlib, base64, logging, requests
+import hashlib, base64, logging, requests, traceback
 from flask import Flask, render_template, request
-from logging.handlers import RotatingFileHandler
+from logging.handlers import RotatingFileHandler, SMTPHandler
 from datetime import datetime
 
 app = Flask(__name__)
@@ -8,6 +8,8 @@ app = Flask(__name__)
 class Config(object):
     DEBUG = False
     THREADS_PER_PAGE = 2
+    MAIL_SERVER = 'mail.redtone.com'
+    MAIL_PORT = 587
 
 class DevelopmentConfig(Config):
     DEBUG = True
@@ -22,6 +24,11 @@ handler = RotatingFileHandler('ipay.log', maxBytes=10000, backupCount=1)
 handler.setLevel(logging.INFO)
 handler.setFormatter(formatter)
 app.logger.addHandler(handler)
+
+ADMINS = ['wingfei.siew@redtone.com']
+mailhandler = SMTPHandler('mail.redtone.com', 'redtonernd@redtone.com', ADMINS, '[IPAY] ERROR')
+mailhandler.setLevel(logging.ERROR)
+app.logger.addHandler(mailhandler)
 
 MERCHANTKEY = 'gBzekIE174'
 
@@ -70,53 +77,63 @@ def submit():
 
 @app.route('/response', methods=['POST'])
 def response():
-    merchantcode = request.form["MerchantCode"]
-    paymentid = request.form["PaymentId"]
-    refno = request.form["RefNo"]
-    amount = request.form["Amount"]
-    ecurrency = request.form["Currency"]
-    remark = request.form["Remark"]
-    transid = request.form["TransId"]
-    authcode = request.form["AuthCode"]
-    estatus = request.form["Status"]
-    errdesc = request.form["ErrDesc"]
-    signature = request.form["Signature"]
+    try:
+        merchantcode = request.form["MerchantCode"]
+        paymentid = request.form["PaymentId"]
+        refno = request.form["RefNo"]
+        amount = request.form["Amount"]
+        ecurrency = request.form["Currency"]
+        remark = request.form["Remark"]
+        transid = request.form["TransId"]
+        authcode = request.form["AuthCode"]
+        estatus = request.form["Status"]
+        errdesc = request.form["ErrDesc"]
+        signature = request.form["Signature"]
 
-    app.logger.info(request.form)
-    qs = build_response_signature(merchantcode, paymentid, refno, amount, ecurrency, estatus)
-    app.logger.info(qs)
+        app.logger.info(request.form)
+        qs = build_response_signature(merchantcode, paymentid, refno, amount, ecurrency, estatus)
+        app.logger.info(qs)
 
-    v = 'Payment fail.'
+        v = 'Payment fail.'
 
-    if estatus == '1' and qs == signature:
-        v = 'Thank you for payment.'
+        if estatus == '1' and qs == signature:
+            v = 'Thank you for payment.'
 
-    return v
+        return v
+
+    except Exception as e:
+        app.logger.error(traceback.format_exc())
+        return unicode(e)
 
 @app.route('/backend/response', methods=['POST'])
 def backend_response():
-    merchantcode = request.form["MerchantCode"]
-    paymentid = request.form["PaymentId"]
-    refno = request.form["RefNo"]
-    amount = request.form["Amount"]
-    ecurrency = request.form["Currency"]
-    remark = request.form["Remark"]
-    transid = request.form["TransId"]
-    authcode = request.form["AuthCode"]
-    estatus = request.form["Status"]
-    errdesc = request.form["ErrDesc"]
-    signature = request.form["Signature"]
+    try:
+        merchantcode = request.form["MerchantCode"]
+        paymentid = request.form["PaymentId"]
+        refno = request.form["RefNo"]
+        amount = request.form["Amount"]
+        ecurrency = request.form["Currency"]
+        remark = request.form["Remark"]
+        transid = request.form["TransId"]
+        authcode = request.form["AuthCode"]
+        estatus = request.form["Status"]
+        errdesc = request.form["ErrDesc"]
+        signature = request.form["Signature"]
 
-    app.logger.info(request.form)
-    qs = build_response_signature(merchantcode, paymentid, refno, amount, ecurrency, estatus)
-    app.logger.info(qs)
+        app.logger.info(request.form)
+        qs = build_response_signature(merchantcode, paymentid, refno, amount, ecurrency, estatus)
+        app.logger.info(qs)
 
-    v = 'Fail'
+        v = 'Fail'
 
-    if estatus == '1' and qs == signature:
-        v = 'RECEIVEOK'
+        if estatus == '1' and qs == signature:
+            v = 'RECEIVEOK'
 
-    return v
+        return v
+
+    except Exception as e:
+        app.logger.error(traceback.format_exc())
+        return unicode(e)
 
 @app.route('/req')
 def requery():
