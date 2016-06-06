@@ -1,12 +1,8 @@
 import hashlib, base64, logging, requests
 from flask import Flask, render_template, request
-<<<<<<< HEAD
 from logging.handlers import RotatingFileHandler
 from datetime import datetime
 
-=======
-from datetime import datetime
->>>>>>> 3928e5f8186afd938a3b3a1c43b6f259e5a88400
 app = Flask(__name__)
 
 class Config(object):
@@ -35,10 +31,6 @@ def get_signature(s):
     return b
 
 def build_signature(merchantcode, refno, amount, ecurrency):
-<<<<<<< HEAD
-=======
-    merchantkey = 'gBzekIE174'
->>>>>>> 3928e5f8186afd938a3b3a1c43b6f259e5a88400
     amt = amount.replace('.', '').replace(',', '')
     ls = [MERCHANTKEY, merchantcode, refno, amt, ecurrency]
     k = ''.join(ls)
@@ -60,13 +52,8 @@ def index():
 def submit():
     o = {
         'MerchantCode': 'M05252',
-<<<<<<< HEAD
-        'PaymentId': '2',
+        'PaymentId': '',
         'RefNo': 'A1' + datetime.now().strftime('%Y%m%d%H%M%S'),
-=======
-        'PaymentId': '16',
-        'RefNo': 'A' + datetime.now().strftime('%Y%m%d%H%M%S'),
->>>>>>> 3928e5f8186afd938a3b3a1c43b6f259e5a88400
         'Amount': '1.00',
         'Currency': 'MYR',
         'ProdDesc': 'Photo Print',
@@ -156,9 +143,5 @@ def requery_submit():
     }
     return render_template('requery.html', o=o)
 
-<<<<<<< HEAD
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000)
-=======
-    return v
->>>>>>> 3928e5f8186afd938a3b3a1c43b6f259e5a88400
