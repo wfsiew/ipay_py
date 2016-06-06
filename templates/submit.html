@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Submit</title>
+</head>
+<body>
+  <form name="frm" method="post" action="https://www.mobile88.com/ePayment/entry.asp">
+    <input type="hidden" name="MerchantCode" value="{{o.MerchantCode}}">
+    <input type="hidden" name="PaymentId" value="{{o.PaymentId}}">
+    <input type="hidden" name="RefNo" value="{{o.RefNo}}">
+    <input type="hidden" name="Amount" value="{{o.Amount}}">
+    <input type="hidden" name="Currency" value="{{o.Currency}}">
+    <input type="hidden" name="ProdDesc" value="{{o.ProdDesc}}">
+    <input type="hidden" name="UserName" value="{{o.UserName}}">
+    <input type="hidden" name="UserEmail" value="{{o.UserEmail}}">
+    <input type="hidden" name="UserContact" value="{{o.UserContact}}">
+    <input type="hidden" name="Remark" value="{{o.Remark}}">
+    <input type="hidden" name="Lang" value="UTF-8">
+    <input type="hidden" name="Signature" value="{{o.Signature}}">
+    <input type="hidden" name="ResponseURL" value="http://localhost:8080/ipay/response">
+    <input type="hidden" name="BackendURL" value="http://localhost:8080/ipay/backend/response">
+    <input type="submit" value="Proceed with Payment" name="Submit">
+  </form>
+</body>
+</html>

@@ -1,0 +1,4 @@
+Server Name : 182.54.217.172
+Data Base Name :MOADev (for Development)
+User ID=sa
+Password=P@ssw0rdMEX
